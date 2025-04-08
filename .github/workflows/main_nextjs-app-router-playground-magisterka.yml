@@ -28,9 +28,14 @@ jobs:
           corepack enable
           corepack prepare pnpm@latest --activate
 
-      - name: pnpm install, build, and test
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Force ESLint v8 (Next.js-compatible)
+        run: pnpm add -D eslint@8.56.0
+
+      - name: Build and test
         run: |
-          pnpm install
           pnpm build
           pnpm test --if-present
 
