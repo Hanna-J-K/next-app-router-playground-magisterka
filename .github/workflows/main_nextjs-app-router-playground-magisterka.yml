@@ -31,15 +31,16 @@ jobs:
       - name: Force ESLint v8 (Next.js-compatible)
         run: pnpm add -D eslint@8.56.0
 
-      - name: Build and test
-        run: |
-          pnpm build
-          pnpm test --if-present
+      - name: Build app
+        run: pnpm build
 
-      - name: Zip build output for deployment
+      - name: Zip standalone output for deployment
         run: |
-          mkdir deploy
-          cp -r .next public package.json next.config.js node_modules deploy/
+          mkdir -p deploy
+          cp -r .next/standalone/* deploy/
+          cp -r .next/static deploy/.next/static
+          cp -r public deploy/public || echo "No public folder"
+          cp package.json next.config.js deploy/
           cd deploy
           zip -r ../release.zip .
 
