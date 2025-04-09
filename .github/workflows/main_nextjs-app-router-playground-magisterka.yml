@@ -39,7 +39,7 @@ jobs:
       - name: Zip build output for deployment
         run: |
           mkdir deploy
-          cp -r .next public package.json next.config.js deploy/
+          cp -r .next public package.json next.config.js node_modules deploy/
           cd deploy
           zip -r ../release.zip .
 
