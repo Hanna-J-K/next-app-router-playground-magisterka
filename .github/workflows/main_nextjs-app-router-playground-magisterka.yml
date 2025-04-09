@@ -34,13 +34,19 @@ jobs:
       - name: Build app
         run: pnpm build
 
-      - name: Zip standalone output for deployment
+      - name: Create deploy folder
+        run: mkdir -p deploy/.next/static
+
+      - name: Copy standalone app into deploy folder
         run: |
-          mkdir -p deploy/.next/static
           cp -r .next/standalone/* deploy/
           cp -r .next/static deploy/.next/static || echo "No static assets"
           cp -r public deploy/public || echo "No public folder"
-          cp package.json next.config.js deploy/
+          cp next.config.js package.json deploy/
+          cp -r .next/standalone/node_modules deploy/node_modules  # ✅ Runtime deps!
+
+      - name: Zip build output
+        run: |
           cd deploy
           zip -r ../release.zip .
 
