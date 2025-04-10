@@ -26,7 +26,9 @@ jobs:
           corepack prepare pnpm@latest --activate
 
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          pnpm install
+          pnpm add styled-jsx  # ✅ Required for Next.js standalone build runtime
 
       - name: Force ESLint v8 (Next.js-compatible)
         run: pnpm add -D eslint@8.56.0
@@ -42,12 +44,8 @@ jobs:
           cp -r .next/standalone/* deploy/
           cp -r .next/static deploy/.next/static || echo "No static assets"
           cp -r public deploy/public || echo "No public folder"
-          cp next.config.js package.json pnpm-lock.yaml deploy/ || echo "Missing config or lockfile"
-
-      - name: Install production deps into deploy folder
-        run: |
-          cd deploy
-          pnpm install --prod
+          cp next.config.js package.json deploy/
+          cp -r .next/standalone/node_modules deploy/node_modules  # ✅ Include runtime deps
 
       - name: Zip build output
         run: |
@@ -86,7 +84,7 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_92944870AB6E424A9037DA00C9EC1D0C }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_83874D677E4C4AEBB8325AC7F95DA8F4 }}
 
-      - name: Deploy to Azure Web App
+      - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
