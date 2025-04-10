@@ -46,6 +46,7 @@ jobs:
           cp -r public deploy/public || echo "No public folder"
           cp next.config.js package.json deploy/
           cp -r .next/standalone/node_modules deploy/node_modules  # ✅ Include runtime deps
+          cp server.js web.config deploy/
 
       - name: Zip build output
         run: |
